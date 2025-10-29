@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-python-crud-sample
+
+  SAM Template for sam-python-crud-sample
+  
+Globals:
+  Function:
+    Timeout: 10
+
+Parameters:
+  Table:
+    Type: String
+    Default: Todos
+  Region:
+    Type: String
+    Default: us-east-1
+  AWSEnv:
+    Type: String
+    Default: AWS
+
+Resources:
+  CreateTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/create_todo/
+      Handler: handler.lambda_handler
+      Runtime: python3.11
+      Environment:
+        Variables:
+          Table: !Ref Table
+          REGION: !Ref Region
+          AWSENV: !Ref AWSEnv
+      Events:
+        CreatTodos:
+          Type: Api
+          Properties:
+            Path: /todos
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TodosTable
+
+  TodosTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Todos
+      AttributeDefinitions:
+        - AttributeName: todoId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: todoId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+Outputs:
+  TodosApi:
+    Description: "API Gateway endpoint URL for Prod stage for Create Activity Function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/todos/"
+  CreateTodoFunction:
+    Description: "Create Todo Lambda Function ARN"
+    Value: !GetAtt CreateTodoFunction.Arn

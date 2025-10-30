@@ -47,10 +47,10 @@ Resources:
     Properties:
       TableName: Todos
       AttributeDefinitions:
-        - AttributeName: todoId
+        - AttributeName: todo_id
           AttributeType: S
       KeySchema:
-        - AttributeName: todoId
+        - AttributeName: todo_id
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 

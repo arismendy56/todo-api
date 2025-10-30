@@ -12,7 +12,7 @@ def lambda_handler(event,context):
             "statusCode": 400,
             "body": json.dumps({"msg": "Bad Request"})
         }
-    table_name = os.environ.get("TABLE", "todos")
+    table_name = os.environ.get("TABLE", "Todos")
     region = os.environ.get("AWS_REGION", "us-east-1")
     aws_environment = os.environ.get("AWSENV", "AWS")
 
@@ -30,7 +30,7 @@ def lambda_handler(event,context):
     todo = json.loads(event["body"])
 
     params = {
-        'id': str(uuid.uuid4()),
+        'todo_id': str(uuid.uuid4()),
         'created_at': str(datetime.timestamp(datetime.now())),
         'title': todo["title"],
         'status': todo["status"],
@@ -42,7 +42,6 @@ def lambda_handler(event,context):
     )
 
     print(f"response: {response}")
-
 
     return {
         'statusCode': 201,
